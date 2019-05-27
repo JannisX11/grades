@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test</title>
+	<script
+		src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+		crossorigin="anonymous"></script>
+	<style type="text/css">
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: #0a1a3c;
+	color: white;
+	font-family: 'segoe ui', sans-serif;
+	font-weight: lighter;
+	font-size: 16pt;
+}
+#wrapper {
+	width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	margin-top: 32px;
+}
+div.break {
+	margin-bottom: 8px;
+}
+div#result {
+	margin-top: 16px;
+	border-top: 1px solid white;
+}
+label {
+	width: 260px;
+	display: inline-block;
+	text-align: right;
+	padding: 4px;
+}
+input {
+	border: none;
+	font-size: 16pt;
+	padding: 5px;
+}
+p {
+	text-align: center;
+}
+
+
+
+	</style>
+	<script type="text/javascript">
+
+		Math.clamp = function(n, a, b) {
+			if (n < a) return a;
+			if (n > b) return b;
+			return n;
+		}
+
+		const getAvg = n => {
+			var r = Math.floor( 40 - (n-300)/18 ) / 10;
+			return Math.clamp(r, 1, 4)
+		}
+		const getNx = g => {
+			var n = 300 + (4 - g) * 180;
+			return n;
+		}
+		function update() {
+
+			
+			var subjects = {
+				s1: 0, s2: 0, s3: 0, s4: 0, m1: 0, m2: 0, m3: 0, m4: 0
+			};
+			for (var sj in subjects) {
+				subjects[sj] = parseInt($(`input[name="${sj}"]`).val())
+				if (isNaN(subjects[sj])) return;
+			}
+			var result = 11 * (subjects.s1 + subjects.s2 + subjects.s3 + subjects.s4);
+				result += 4 * (subjects.m1 + subjects.m2 + subjects.m3 + subjects.m4);
+
+			var avg = getAvg(result)
+			var max = getNx(avg)
+			var sub = avg === 4 && result < 300;
+			$('#points').text(result)
+			$('#grade').text(sub ? '-' : avg.toFixed(1))
+			if (!sub) {
+				$('#grade-points').text(`(${Math.clamp(max-17, 300, 823)} bis ${max>830 ? 900 : max})`)
+			} else {
+				$('#grade-points').text('Tschau')
+			}
+
+		}
+
+		$(document).ready(e => {
+
+			setInterval(update, 500)
+
+		})
+	</script>
+</head>
+<body>
+	<div id="wrapper">
+		<div>
+			<label for="s1">Deutsch:</label>
+			<input type="number" min="0" max="15" value="5" name="s1">
+		</div>
+		<div>
+			<label for="s2">Englisch:</label>
+			<input type="number" min="0" max="15" value="5" name="s2">
+		</div>
+		<div>
+			<label for="s3">Mathe:</label>
+			<input type="number" min="0" max="15" value="5" name="s3">
+		</div>
+		<div class="break">
+			<label for="s4">Geo/Geschichte:</label>
+			<input type="number" min="0" max="15" value="5" name="s4">
+		</div>
+
+		<div>
+			<label for="m1">Franz&ouml;sisch:</label>
+			<input type="number" min="0" max="15" value="0" name="m1">
+		</div>
+		<div>
+			<label for="m2">Biologie:</label>
+			<input type="number" min="0" max="15" value="0" name="m2">
+		</div>
+		<div>
+			<label for="m3">Kunst:</label>
+			<input type="number" min="0" max="15" value="0" name="m3">
+		</div>
+		<div>
+			<label for="m4">Geschichte/Geo:</label>
+			<input type="number" min="0" max="15" value="0" name="m4">
+		</div>
+		<div id="result">
+			<p id="points" style="font-size: 1.5em"></p>
+			<p id="grade" style="font-size: 2.8em"></p>
+			<p id="grade-points" style="font-size: 1.2em"></p>
+		</div>
+	</div>
+</body>
+</html>
